@@ -6,17 +6,17 @@
 		<div class="row">
 			<div class="col-sm-8 col-sm-offset-2 text-center">
 				<h1 class="single-movie-title">
-
+					<%= movie.title %>
 				</h1>
 				
 				<h3 class="single-movie-title">
-
+					<%= movie.tagline %>
 				</h3>
 				
 
-				<img src="" />
+				<img src="<%= imageBaseUrl + movie.poster_path %>" />
 				
-				<p class="overview-header">Movie Synopsis: <span class="single-movie-overview">
+				<p class="overview-header">Movie Synopsis: <%= movie.overview %> <span class="single-movie-overview">
 					
 				</span></p>
 			</div>
