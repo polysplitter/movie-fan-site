@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 // =============PASSPORT FILES==============/
+const session = require('express-session')
 const passport = require('passport')
 const GitHubStrategy = require('passport-github').Strategy
 // =========================================/
@@ -18,14 +19,32 @@ var app = express();
 app.use(helmet())
 
 // ==============PASSPORT CONFIG============================
+app.use(session({
+  secret: 'batman',
+  resave: false,
+  saveUninitialized: true,
+  // this by default is true and will block req.user from getting the information.
+  //cookie: { secure: true }
+}))
+
+app.use(passport.initialize())
+
+app.use(passport.session())
+
 const passportConfig =  require('./config')
 passport.use(new GitHubStrategy(passportConfig,
-function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    return cb(err, user);
-  });
-}
-));
+  function(accessToken, refreshToken, profile, cb) {
+    return cb(null, profile)
+  }
+))
+
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+
+passport.deserializeUser((user, done) => {
+  done(null, user)
+})
 // =========================================================
 
 // view engine setup
