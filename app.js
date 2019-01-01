@@ -3,6 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
+// =============PASSPORT FILES==============/
+const passport = require('passport')
+const GitHubStrategy = require('passport-github').Strategy
+// =========================================/
+
 const helmet = require('helmet')
 
 var indexRouter = require('./routes/index');
@@ -10,6 +16,17 @@ var indexRouter = require('./routes/index');
 var app = express();
 
 app.use(helmet())
+
+// ==============PASSPORT CONFIG============================
+const passportConfig =  require('./config')
+passport.use(new GitHubStrategy(passportConfig,
+function(accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({ githubId: profile.id }, function (err, user) {
+    return cb(err, user);
+  });
+}
+));
+// =========================================================
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
